@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Productos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,sans-serif;margin:2rem}
+    table{border-collapse:collapse;width:100%}
+    th,td{padding:.6rem;border:1px solid #ddd}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+    a.btn{padding:.5rem .8rem;border:1px solid #333;border-radius:.5rem;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1>Productos</h1>
+    <a class="btn" th:href="@{/productos/nuevo}">Nuevo producto</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Nombre</th><th>Precio</th></tr>
+    </thead>
+    <tbody>
+      <tr th:each="p : ${productos}">
+        <td th:text="${p.id}">1</td>
+        <td th:text="${p.nombre}">Ejemplo</td>
+        <td th:text="${#numbers.formatDecimal(p.precio,1,2)}">0.00</td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(productos)}">
+        <td colspan="3">Sin productos aún</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><a th:href="@{/}">Volver al inicio</a></p>
+</body>
+</html>
