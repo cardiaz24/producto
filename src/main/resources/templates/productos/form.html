@@ -1,40 +1,113 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8" />
-  <title>Nuevo Producto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body{font-family:system-ui,sans-serif;margin:2rem}
-    form{max-width:520px;border:1px solid #ddd;border-radius:12px;padding:1rem}
-    .row{margin-bottom:.8rem}
-    label{display:block;margin-bottom:.3rem}
-    input{width:100%;padding:.5rem;border:1px solid #ccc;border-radius:.4rem}
-    .error{color:#b00020;font-size:.9rem}
-    .actions{display:flex;gap:.6rem}
-    button,a{padding:.5rem .8rem;border:1px solid #333;border-radius:.5rem;text-decoration:none;background:#fff}
-  </style>
-</head>
-<body>
-  <h1>Nuevo Producto</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="${producto.id != null ? 'Editar Producto' : 'Nuevo Producto'}">Producto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+      .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      }
+      .page-header {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container py-5">
+      <div class="form-container">
+        <!-- Mensajes Flash -->
+        <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+          <span th:text="${mensaje}"></span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+          <span th:text="${error}"></span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
-  <form th:action="@{/productos}" th:object="${producto}" method="post">
-    <div class="row">
-      <label for="nombre">Nombre</label>
-      <input id="nombre" type="text" th:field="*{nombre}" placeholder="Ej: Manzanas" />
-      <div class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+        <div class="page-header">
+          <h1 class="h2" th:text="${producto.id != null ? 'Editar Producto' : 'Nuevo Producto'}">
+            Producto
+          </h1>
+          <p class="text-muted" th:text="${producto.id != null ? 'Actualiza la información del producto' : 'Completa los datos del nuevo producto'}">
+            Información del producto
+          </p>
+        </div>
+
+        <form
+          th:action="${producto.id != null} ? 
+                     @{/productos/{id}/actualizar(id=${producto.id})} : 
+                     @{/productos}"
+          th:object="${producto}"
+          method="post"
+        >
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre:</label>
+            <input
+              type="text"
+              id="nombre"
+              class="form-control"
+              th:field="*{nombre}"
+              placeholder="Ej: Naranjas, Manzanas, etc."
+            />
+            <div
+              class="invalid-feedback d-block"
+              th:if="${#fields.hasErrors('nombre')}"
+              th:errors="*{nombre}"
+            ></div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="precio" class="form-label">Precio:</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                id="precio"
+                class="form-control"
+                th:field="*{precio}"
+                placeholder="0.00"
+              />
+            </div>
+            <div
+              class="invalid-feedback d-block"
+              th:if="${#fields.hasErrors('precio')}"
+              th:errors="*{precio}"
+            ></div>
+          </div>
+          
+          <div class="d-flex gap-2 justify-content-end">
+            <a th:href="@{/productos}" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left"></i> Cancelar
+            </a>
+            <button
+              type="submit"
+              class="btn"
+              th:class="${producto.id != null} ? 'btn-warning' : 'btn-primary'"
+              th:text="${producto.id != null} ? 'Actualizar Producto' : 'Crear Producto'"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <div class="row">
-      <label for="precio">Precio</label>
-      <input id="precio" type="number" step="0.01" th:field="*{precio}" placeholder="0.00" />
-      <div class="error" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
-    </div>
-
-    <div class="actions">
-      <button type="submit">Guardar</button>
-      <a th:href="@{/productos}">Cancelar</a>
-    </div>
-  </form>
-</body>
+    <!-- Bootstrap 5 JS con Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
